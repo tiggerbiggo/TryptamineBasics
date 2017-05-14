@@ -45,7 +45,6 @@ public class CircularLayerPanel extends AbstractLayerPanel
             }
             catch(Exception e)
             {
-                System.out.println("oops");
                 return null;
             }
         }

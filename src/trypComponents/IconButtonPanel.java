@@ -76,6 +76,12 @@ public class IconButtonPanel extends JPanel implements Runnable
         this.weight3 = weight3;
     }
     
+    public void setPalette(Palette P)
+    {
+        if(P != null)
+            normal = P;
+    }
+    
     public void updateButtons()
     {
         
@@ -89,7 +95,7 @@ public class IconButtonPanel extends JPanel implements Runnable
                 
                 Parameter[] params;
                 
-                switch(type)
+                /*switch(type)
                 {
                     case CIRCULAR:
                         params = Gen_Circular.getRandomParams(randType, 
@@ -116,13 +122,17 @@ public class IconButtonPanel extends JPanel implements Runnable
                             weight2, 
                             weight3);
                         break;
-                }
+                }*/
+                
+                params = Gen_Formula.getRandomParams(randType, 
+                            weight1, 
+                            weight2, 
+                            weight3);
                 
                 
                 
-                
-                
-                Layer l = new Layer("doot", type, params);
+                //Layer l = new Layer("doot", GenType.FORMULA, params);
+                Layer l = new Layer("doot", GenType.FORMULA, params);
                 buttons[i][j].setLayer(l);
                 buttons[i][j].updateIcon(normal);
                 

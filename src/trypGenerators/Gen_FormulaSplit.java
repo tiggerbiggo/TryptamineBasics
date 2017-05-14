@@ -68,7 +68,6 @@ public class Gen_FormulaSplit extends AbstractGenerator
     {
         if(num==0) return DC;
         
-        System.out.println("Noreturn: " + num);
         
         int max, dx, dy, cx, cy, n;
         

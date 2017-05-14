@@ -2,7 +2,7 @@ package trypResources;
 
 public class Vector2 
 {
-    double x, y;
+    public double x, y;
     public Vector2(double x, double y)
     {
         this.x=x;

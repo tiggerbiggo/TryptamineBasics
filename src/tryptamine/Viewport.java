@@ -57,10 +57,10 @@ public class Viewport extends JPanel implements ActionListener
         }
     }
     
-    private boolean checkThread()
+    public void setPalette(Palette P)
     {
-        
-        return false;
+        if(P != null)
+            this.defaultPalette = P;
     }
     
     public void updateImages()
@@ -86,13 +86,11 @@ public class Viewport extends JPanel implements ActionListener
                     isWaiting = false;
                     images = managerObject.threadImages;
                     managerObject.isDone = false;
-                    System.out.println("Images set");
                 }
                 else
                 {
                     try
                     {
-                        System.out.println("Started trycatch");
                         managerObject.setupForThread(l, this.getWidth(), this.getHeight(), defaultPalette);
                         isWaiting = true;
                         managerThread = new Thread(managerObject);
@@ -100,7 +98,6 @@ public class Viewport extends JPanel implements ActionListener
                     }
                     catch(Exception e)
                     {
-                        System.out.println("caught");
                     }
                 }
             }
@@ -110,7 +107,6 @@ public class Viewport extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        System.out.println("Timer Triggered, isWaiting:" + isWaiting);
         
         if(isWaiting)
             updateImages();

@@ -31,14 +31,14 @@ public enum GenType
     FORMULA("Formula"),
     SIMPLELINES("Simple Lines"),
     DISTORTFORMULA("Distort Formula"),
-    POLKADOT("Polkadot");
+    POLKADOT("Polkadot"),
+    SIERPINSKI("Sierpinski");
     
     String name;
     GenType(String name)
     {
         this.name = name;
     }
-    
     public static AbstractGenerator getNewGenerator(GenType ID, Parameter[] params)
     {
         try
@@ -55,6 +55,8 @@ public enum GenType
                     return new Gen_DistortFormula(params);
                 case POLKADOT:
                     return new Gen_Polkadot(params);
+                case SIERPINSKI:
+                    return new Gen_Sierpinski();
             }
         }
         catch(IllegalArgumentException e){}

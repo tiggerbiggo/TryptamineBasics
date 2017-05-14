@@ -164,6 +164,13 @@ public class DynamicCanvas
         return num;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param paletteIndex
+     * @param colorIndex
+     */
     public void draw(int x, int y, int paletteIndex, int colorIndex)
     {
         try

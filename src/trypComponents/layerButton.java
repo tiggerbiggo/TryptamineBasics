@@ -21,6 +21,8 @@ public class layerButton extends JButton
     Layer l;
     DynamicCanvas DC;
     
+    
+    
     public void setLayer(Layer l)
     {
         this.l = l;
@@ -35,7 +37,7 @@ public class layerButton extends JButton
     {
         if(l != null && l.getGenerator() != null)
         {
-            DynamicCanvas DC = new DynamicCanvas(this.getWidth(), this.getHeight()-10, P);
+            DynamicCanvas DC = new DynamicCanvas(this.getWidth()-10, this.getHeight()-10, P);
             DC = l.getGenerator().draw(DC, 0);
             this.setIcon(new ImageIcon(ImageManager.constructImage(DC)));
         }

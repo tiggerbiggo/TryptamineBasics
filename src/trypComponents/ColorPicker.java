@@ -23,16 +23,15 @@ public class ColorPicker extends JPanel implements FocusListener, ChangeListener
 {
     JTextField[] fields;
     JSlider[] sliders;
-    JButton colorButton;
     
     Color C;
     
-    public ColorPicker(boolean orientation, ActionListener A)
+    public ColorPicker(boolean orientation, ActionListener A, ChangeListener C)
     {
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         
-        this.setBackground(Color.black);
+        
         
         fields = new JTextField[3];
         
@@ -62,6 +61,10 @@ public class ColorPicker extends JPanel implements FocusListener, ChangeListener
             sliders[i].setMaximum(255);
             sliders[i].setValue(0);
             sliders[i].addChangeListener(this);
+            if(C != null)
+            {
+                sliders[i].addChangeListener(C);
+            }
             
             if(orientation)c.gridx = 0;
             else c.gridx=2;
@@ -70,15 +73,6 @@ public class ColorPicker extends JPanel implements FocusListener, ChangeListener
             
             this.add(sliders[i], c);
         }
-        
-        colorButton = new JButton();
-        c.gridx=0;
-        c.gridy=3;
-        c.gridwidth=3;
-        c.weighty=1;
-        c.fill = GridBagConstraints.BOTH;
-        colorButton.addActionListener(A);
-        this.add(colorButton, c);
         
         updateColor();
         
@@ -89,8 +83,7 @@ public class ColorPicker extends JPanel implements FocusListener, ChangeListener
         C=new Color(sliders[0].getValue(),
                     sliders[1].getValue(),
                     sliders[2].getValue());
-        
-        if(colorButton != null) colorButton.setBackground(C);
+        this.setBackground(C);
     }
     
     public Color getColor()
@@ -169,15 +162,6 @@ public class ColorPicker extends JPanel implements FocusListener, ChangeListener
             }
         }
         updateColor();
-    }
-    
-    public int checkActions(Object toCheck)
-    {
-        if(toCheck == colorButton)
-        {
-            return ActionCodes.CODE_COLORPICKER_BUTTON;
-        }
-        return ActionCodes.NULLCODE;
     }
 
     @Override

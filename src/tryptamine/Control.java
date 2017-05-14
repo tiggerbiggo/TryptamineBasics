@@ -5,10 +5,7 @@
  */
 package tryptamine;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -16,11 +13,14 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import trypComponents.ColorPicker;
 import trypComponents.IconButtonPanel;
 import trypResources.Layer;
 import trypResources.Palette;
@@ -35,11 +35,11 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     final int buttonX = 5;
     final int buttonY = 5;
     
-    JFrame controlWindow, viewWindow;
+    JFrame controlWindow, viewWindow, buttonWindow;
     
     Viewport viewport;
     
-    JPanel sliderPanel;
+    JPanel sliderPanel, colorPanel;
     
     IconButtonPanel buttonPanel;
     
@@ -47,21 +47,38 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     
     ArrayList<BufferedImage> images;
     int currentImage = 0;
-    int seed = 11;
+    int seed;
+    final int pNum = 50;
     
     JSlider[] sliders;
     
+    ColorPicker cPicker1, cPicker2;
+    JButton newSeedButton;
+    
     Palette P;
+    
+    Layer currentLayer;
+    
+    Timer refreshTimer;
     
     public void initGUI() 
     {
         //Begin object definitions
         
+        buttonWindow = new JFrame("Click the patterns");
         controlWindow = new JFrame("Control Panel");
         viewWindow = new JFrame("Viewport");
         viewport = new Viewport();
         sliderPanel = new JPanel();
         buttonPanel = new IconButtonPanel(buttonX, buttonY, this);
+        colorPanel = new JPanel();
+        
+        cPicker1 = new ColorPicker(true, null, this);
+        cPicker2 = new ColorPicker(false, null, this);
+        
+        newSeedButton = new JButton("Current Seed:" + seed);
+        setSeed(-1);
+        
         
         //Begin setup
         
@@ -71,30 +88,51 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         controlWindow.setResizable(true);
         controlWindow.setLocationRelativeTo(null);
         controlWindow.setVisible(false);
-        controlWindow.addComponentListener(this);
         
         viewWindow.setLayout(new GridLayout(1,1));
         viewWindow.setBounds(10, 10, 500, 500);
         viewWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        viewWindow.setResizable(true);
-        viewWindow.setLocationRelativeTo(null);
+        viewWindow.setResizable(false);
+        viewWindow.setLocationRelativeTo(controlWindow);
         viewWindow.setVisible(false);
         viewWindow.addComponentListener(this);
         
+        buttonWindow.setLayout(new GridLayout(1,1));
+        buttonWindow.setBounds(10, 10, 500, 500);
+        buttonWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        buttonWindow.setResizable(false);
+        buttonWindow.setLocationRelativeTo(null);
+        buttonWindow.setVisible(false);
+        buttonWindow.addComponentListener(this);
+        
+        
         buttonPanel.setLayout(new GridLayout(buttonX, buttonY));
+        buttonWindow.add(buttonPanel);
         
         sliderPanel.setLayout(new GridLayout(1,0));
+        colorPanel.setLayout(new GridLayout(1,3));
+        
+        newSeedButton.addActionListener(this);
+        
+        colorPanel.add(cPicker1);
+        colorPanel.add(cPicker2);
+        
+        
         
         viewWindow.add(viewport);
         
         //begin slider definitions
         
         sliders = new JSlider[3];
+        int[] nums = {
+            10, 50, 50
+        };
         
         for(int i=0; i<3; i++)
         {
             sliders[i] = new JSlider();
-            sliders[i].setMaximum(50);
+            sliders[i].setMaximum(nums[i]);
+            sliders[i].setValue(0);
             sliders[i].addChangeListener(this);
             sliderPanel.add(sliders[i]);
         }
@@ -107,34 +145,33 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         c.gridy=0;
         c.fill=GridBagConstraints.BOTH;
         c.weightx=1;
-        c.weighty=1;
+        c.weighty=0.3;
         c.gridwidth=1;
-        
-        
-        
-        
-        c.gridx=0;
-        
-        controlWindow.add(buttonPanel, c);
-        
-        
-        c.fill=GridBagConstraints.BOTH;
-        c.gridwidth=1;
-        c.gridy=1;
-        
-        c.weighty=1;
         
         controlWindow.add(sliderPanel, c);
+        c.weighty=1;
         
         
+        c.gridy=1;
+        controlWindow.add(colorPanel, c);
         
-        P = new Palette(100,0);
-        P.setGradient(0, 50, Color.black, Color.white);
-        P.setGradient(50, 99, Color.white, Color.black);
+        c.gridy=2;
         
-        Random tmpRand = new Random();
+        controlWindow.add(newSeedButton, c);
         
-        seed = tmpRand.nextInt();
+        
+        P = new Palette(pNum,0);
+        
+        updatePalette();
+        
+        
+        refreshTimer = new Timer(50, this);
+    }
+    
+    public void updatePalette()
+    {
+        P.setGradient(0, pNum/2, cPicker1.getColor(), cPicker2.getColor());
+        P.setGradient(pNum/2, pNum-1, cPicker2.getColor(), cPicker1.getColor());
     }
     
     public void setImages(ArrayList<BufferedImage> images) {
@@ -226,7 +263,7 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         
         if(buttonPanelThread.isAlive())
         {
-            buttonPanelThread.interrupt();
+            //buttonPanelThread.interrupt();
         }
         else
         {
@@ -237,6 +274,7 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
                 sliders[0].getValue(), 
                 sliders[1].getValue(), 
                 sliders[2].getValue());
+            buttonPanel.setPalette(P);
             try
             {
                 buttonPanelThread = new Thread(buttonPanel);
@@ -256,9 +294,18 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     public synchronized void show()
     {
         controlWindow.setVisible(true);
+        viewWindow.setUndecorated(true);
         viewWindow.setVisible(true);
         
-        updateButtonPanel();
+        buttonWindow.setVisible(true);
+        
+        buttonWindow.revalidate();
+        
+        
+        cPicker1.setColor(Color.red);
+        cPicker2.setColor(Color.black);
+        
+        refreshTimer.start();
         
         try
         {
@@ -292,20 +339,66 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     @Override
     public void stateChanged(ChangeEvent e) 
     {
+        updatePalette();
         updateButtonPanel();
+        //updateViewport(null);
+        
     }
 
+    public void setSeed(int seed)
+    {
+        if(seed <=-1)
+        {
+            this.seed = new Random().nextInt();
+        }
+        else
+        {
+            this.seed = seed;
+        }
+        
+        newSeedButton.setText("Click me to randomise the patterns");
+        System.out.println(this.seed);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e)
     {
         //get layer from button panel
         
-        Layer l = buttonPanel.getLayerFromButton(e);
-        
-        if(l != null)
+        if(e.getSource() == newSeedButton)
         {
-            viewport.setLayer(l);
-            System.out.println("Layer Set");
+            setSeed(-1);
+            updateButtonPanel();
+        }
+        else updateViewport(e);
+    }
+    
+    public void updateViewport(ActionEvent e)
+    {
+        if(e != null)
+            currentLayer = buttonPanel.getLayerFromButton(e);
+        
+        if(currentLayer != null)
+        {
+            
+            try
+            {
+                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
+
+                if(gd.isFullScreenSupported())
+                {
+                    
+                    
+                    gd.setFullScreenWindow(viewWindow);
+                    
+                }
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+            viewport.setPalette(P);
+            viewport.setLayer(currentLayer);
         }
     }
 }

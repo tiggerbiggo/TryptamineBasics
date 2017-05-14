@@ -2,7 +2,6 @@ package trypGenerators;
 
 import java.util.ArrayList;
 import java.util.Random;
-import trypComponents.FormulaPresets;
 import trypParams.Parameter;
 import trypParams.paramType;
 import trypResources.Formula;
@@ -110,14 +109,14 @@ public class Gen_Formula extends AbstractGenerator
             rand = new Random();
         }
         
-        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*weight2, rand.nextDouble()*(weight3/20.0));
+        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*weight2*2, rand.nextDouble()*(weight3/40.0));
+        
+        //GapPresets.gaps[rand.nextInt(GapPresets.gaps.length-1)]
         
         return constructParams(
                 rand.nextBoolean(), 
-                rand.nextInt(weight1), 
-                GapPresets.gaps[
-                        rand.nextInt(
-                                GapPresets.gaps.length-1)], 
+                rand.nextInt(50)*weight1, 
+                GapPresets.gaps[1], 
                 f.get(rand.nextInt(f.size()-1)));
     }
     

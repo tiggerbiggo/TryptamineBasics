@@ -49,7 +49,6 @@ public class PolkaDotLayerPanel extends AbstractLayerPanel
                 return null;
             }
         }
-        System.out.println("Returning");
         return Gen_Polkadot.constructParams(
                 tempArray[0], 
                 tempArray[1], 
