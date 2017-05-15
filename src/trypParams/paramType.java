@@ -17,5 +17,6 @@ public enum paramType
     STRING,
     FORMULA,
     BOOLEAN,
-    CIRCLEMODE
+    CIRCLEMODE,
+    DOUBLE
 }

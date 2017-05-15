@@ -5,8 +5,8 @@
  */
 package trypResources;
 
-import trypGenerators.GenType;
 import trypGenerators.AbstractGenerator;
+import trypGenerators.GenType;
 import trypParams.Parameter;
 
 /**

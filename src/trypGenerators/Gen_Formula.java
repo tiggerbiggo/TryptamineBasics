@@ -3,7 +3,6 @@ package trypGenerators;
 import java.util.ArrayList;
 import java.util.Random;
 import trypParams.Parameter;
-import trypParams.paramType;
 import trypResources.Formula;
 import tryptamine.DynamicCanvas;
 import tryptamine.GapPresets;
@@ -77,29 +76,20 @@ public class Gen_Formula extends AbstractGenerator
     
     public final boolean parseParams(Parameter[] params)
     {
-        if(params != null && params.length == 4)
+        try
         {
-            if(validateParams(params))
-            {
-                HV=params[0].getBoolean();
-                colorSpeed = params[1].getInt();
-                gaps=params[2].getIntArray();
-                F=params[3].getFormula();
-                return true;
-            }
+            HV=(Boolean)params[0].get();
+            colorSpeed = (Integer)params[1].get();
+            gaps=(int[])params[2].get();
+            F=(Formula)params[3].get();
+            return true;
+        }
+        catch(Exception e)
+        {
+            
         }
         
         return false;
-    }
-
-    public static boolean validateParams(Parameter[] params) 
-    {
-        return params != null &&
-                params.length==4 &&
-                params[0].getType()==paramType.BOOLEAN && 
-                params[1].getType()==paramType.INTEGER &&
-                params[2].getType()==paramType.INTARRAY &&
-                params[3].getType()==paramType.FORMULA;
     }
     
     public static Parameter[] getRandomParams(Random rand, int weight1, int weight2, int weight3)

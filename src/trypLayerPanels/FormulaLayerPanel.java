@@ -69,24 +69,19 @@ public class FormulaLayerPanel extends AbstractLayerPanel
     @Override
     public void setParams(Parameter[] params) 
     {
-        //hv, colorspeed, gaps, formula
-        if(Gen_Formula.validateParams(params))
+        try
         {
-            try
-            {
-                boolHVPanel.setBoolean(params[0].getBoolean());
-                colorSpeed.setInt(params[1].getInt());
-                gapPanel.setSelected(GapPresets.parseArray(params[2].getIntArray()));
-                double coeff = params[3].getFormula().getCoeff();
-                double freq = params[3].getFormula().getFreq();
-                int selected = params[3].getFormula().getSelected();
-                presets.setAll(coeff, freq, selected);
-            }
-            catch(Exception e)
-            {
-                
-            }
+            Formula f = (Formula)params[3].get();
+            
+            boolHVPanel.setBoolean((Boolean)params[0].get());
+            colorSpeed.setInt((Integer)params[1].get());
+            gapPanel.setSelected(GapPresets.parseArray((int[])params[2].get()));
+            double coeff = f.getCoeff();
+            double freq = f.getFreq();
+            int selected = f.getSelected();
+            presets.setAll(coeff, freq, selected);
         }
+        catch(Exception e){}
     }
     
 }

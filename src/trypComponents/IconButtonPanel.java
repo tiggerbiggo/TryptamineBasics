@@ -12,9 +12,8 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JPanel;
 import trypGenerators.GenType;
-import trypGenerators.Gen_Circular;
+import trypGenerators.Gen_DualFormula;
 import trypGenerators.Gen_Formula;
-import trypGenerators.Gen_Polkadot;
 import trypParams.Parameter;
 import trypResources.Layer;
 import trypResources.Palette;
@@ -124,7 +123,7 @@ public class IconButtonPanel extends JPanel implements Runnable
                         break;
                 }*/
                 
-                params = Gen_Formula.getRandomParams(randType, 
+                params = Gen_DualFormula.getRandomParams(randType, 
                             weight1, 
                             weight2, 
                             weight3);
@@ -132,7 +131,7 @@ public class IconButtonPanel extends JPanel implements Runnable
                 
                 
                 //Layer l = new Layer("doot", GenType.FORMULA, params);
-                Layer l = new Layer("doot", GenType.FORMULA, params);
+                Layer l = new Layer("doot", GenType.DUALFORMULA, params);
                 buttons[i][j].setLayer(l);
                 buttons[i][j].updateIcon(normal);
                 

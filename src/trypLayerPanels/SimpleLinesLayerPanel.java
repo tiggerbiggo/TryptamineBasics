@@ -55,13 +55,13 @@ public class SimpleLinesLayerPanel extends AbstractLayerPanel
     @Override
     public void setParams(Parameter[] params) 
     {
-        //hv, colorspeed, gaps
-        if(Gen_SimpleLines.validateParams(params))
+        try
         {
-            boolHVPanel.setBoolean(params[0].getBoolean());
-            colorSpeed.setInt(params[1].getInt());
-            gapPanel.setSelected(GapPresets.parseArray(params[2].getIntArray()));
+            boolHVPanel.setBoolean((Boolean)params[0].get());
+            colorSpeed.setInt((Integer)params[1].get());
+            gapPanel.setSelected(GapPresets.parseArray((int[])params[2].get()));
         }
+        catch(Exception e){}
     }
     
 }

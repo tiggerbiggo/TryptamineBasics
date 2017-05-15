@@ -7,7 +7,6 @@ package trypGenerators;
 
 import java.util.Random;
 import trypParams.Parameter;
-import trypParams.paramType;
 import trypResources.CircleModes;
 import trypResources.Vector2;
 import tryptamine.DynamicCanvas;
@@ -73,33 +72,20 @@ public class Gen_Circular extends AbstractGenerator
         return params;
     }
     
-    public final boolean parseParams(Parameter[] params)
+    public boolean parseParams(Parameter[] params)
     {
-        if(params != null && params.length == 5)
+        try
         {
-            if(validateParams(params))
-            {
-                r=params[0].getInt();
-                x=params[1].getInt();
-                y=params[2].getInt();
-                colorOffset = params[3].getInt();
-                colorSpeed = params[4].getInt();
-                return true;
-            }
+            r=(Integer)params[0].get();
+            x=(Integer)params[1].get();
+            y=(Integer)params[2].get();
+            colorOffset = (Integer)params[3].get();
+            colorSpeed = (Integer)params[4].get();
+            return true;
         }
-        
+        catch(Exception e)
+        {}
         return false;
-    }
-
-    public static boolean validateParams(Parameter[] params) 
-    {
-        return params != null &&
-               params.length==5 &&
-               params[0].getType()==paramType.INTEGER &&
-               params[1].getType()==paramType.INTEGER &&
-               params[2].getType()==paramType.INTEGER &&
-               params[3].getType()==paramType.INTEGER &&
-               params[4].getType()==paramType.INTEGER;
     }
 
     /*
@@ -116,8 +102,6 @@ public class Gen_Circular extends AbstractGenerator
         {
             rand = new Random();
         }
-        
-        
         
         return constructParams(
                 (rand.nextInt(weight1)*weight3)-1,

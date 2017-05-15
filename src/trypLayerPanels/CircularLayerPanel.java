@@ -59,22 +59,28 @@ public class CircularLayerPanel extends AbstractLayerPanel
     @Override
     public void setParams(Parameter[] params) 
     {
-        if(Gen_Circular.validateParams(params))
+        try
         {
             for(int i=0; i<panelNum; i++)
             {
-                intPanels[i].setInt(params[i].getInt());
+                intPanels[i].setInt((Integer)params[i].get());
             }
             CircleModes[] values = CircleModes.values();
             for(int i=0; i<values.length; i++)
             {
-                if(values[i] == params[panelNum].getCircleMode())
+                if(values[i] == (CircleModes)params[panelNum].get())
                 {
                     modes.setSelectedIndex(i);
                     break;
                 }
             }
         }
+        catch(Exception e)
+        {
+            //Exception was thrown
+        }
+        
+        
     }
     
 }

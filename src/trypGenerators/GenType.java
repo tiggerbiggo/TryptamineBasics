@@ -1,26 +1,4 @@
 package trypGenerators;
-
-/*public enum GenType
-{
-    GenType("Null", null);
-    
-    String name;
-    AbstractGenerator gen;
-    
-    GenType(String name, AbstractGenerator gen)
-    {
-        this.name = name;
-        this.gen = gen;
-    }
-    
-    public String toString()
-    {
-        return name;
-    }
-}*/
-
-
-
 import trypLayerPanels.*;
 import trypParams.Parameter;
 
@@ -32,7 +10,8 @@ public enum GenType
     SIMPLELINES("Simple Lines"),
     DISTORTFORMULA("Distort Formula"),
     POLKADOT("Polkadot"),
-    SIERPINSKI("Sierpinski");
+    SIERPINSKI("Sierpinski"),
+    DUALFORMULA("Dual Formula");
     
     String name;
     GenType(String name)
@@ -57,6 +36,8 @@ public enum GenType
                     return new Gen_Polkadot(params);
                 case SIERPINSKI:
                     return new Gen_Sierpinski();
+                case DUALFORMULA:
+                    return new Gen_DualFormula(params);
             }
         }
         catch(IllegalArgumentException e){}

@@ -7,7 +7,6 @@ package trypGenerators;
 
 import java.util.ArrayList;
 import trypParams.Parameter;
-import trypParams.paramType;
 import trypResources.Formula;
 import trypResources.PaletteReference;
 import tryptamine.DynamicCanvas;
@@ -43,7 +42,6 @@ public class Gen_DistortFormula extends AbstractGenerator
         for(int i=0; i<maxPos; i++)
         {
             startPos=(int)Math.round(F.recursiveCalc(i));
-            //if(!dir)startPos*=-1;
             if(n>=gaps.length)
             {
                 n=0;
@@ -111,12 +109,6 @@ public class Gen_DistortFormula extends AbstractGenerator
         else 
         {
             cx=pos;
-            if(num<0)
-            {
-                //dy*=-1;
-                cy=max;
-            }
-            else cy = 0;
             cy=0;
             
         }
@@ -283,29 +275,16 @@ public class Gen_DistortFormula extends AbstractGenerator
     
     public final boolean parseParams(Parameter[] params)
     {
-        if(params != null && params.length == 4)
+        try
         {
-            if(validateParams(params))
-            {
-                HV=params[0].getBoolean();
-                dir=params[1].getBoolean();
-                gaps=params[2].getIntArray();
-                F=params[3].getFormula();
+                HV=(Boolean)params[0].get();
+                dir=(Boolean)params[1].get();
+                gaps=(int[])params[2].get();
+                F=(Formula)params[3].get();
                 return true;
-            }
         }
+        catch(Exception e){}
         
         return false;
-    }
-
-    public static boolean validateParams(Parameter[] params) 
-    {
-        
-        return  params != null &&
-                params.length==4 &&
-                params[0].getType()==paramType.BOOLEAN && 
-                params[1].getType()==paramType.BOOLEAN && 
-                params[2].getType()==paramType.INTARRAY &&
-                params[3].getType()==paramType.FORMULA;
     }
 }

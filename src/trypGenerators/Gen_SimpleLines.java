@@ -6,7 +6,6 @@
 package trypGenerators;
 
 import trypParams.Parameter;
-import trypParams.paramType;
 import tryptamine.DynamicCanvas;
 
 /**
@@ -73,27 +72,14 @@ public class Gen_SimpleLines extends AbstractGenerator
     
     public final boolean parseParams(Parameter[] params)
     {
-        if(params != null && params.length == 3)
+        try
         {
-            if(validateParams(params))
-            {
-                this.HV=params[0].getBoolean();
-                this.colorSpeed=params[1].getInt();
-                this.gaps=params[2].getIntArray();
-                return true;
-            }
+            this.HV=(Boolean)params[0].get();
+            this.colorSpeed=(Integer)params[1].get();
+            this.gaps=(int[])params[2].get();
+            return true;
         }
+        catch(Exception e){}
         return false;
     }
-
-    public static boolean validateParams(Parameter[] params) 
-    {
-        return params != null &&
-                params.length==3 &&
-                params[0].getType()==paramType.BOOLEAN && 
-                params[1].getType()==paramType.INTEGER &&
-                params[2].getType()==paramType.INTARRAY;
-    }
-    
-    
 }

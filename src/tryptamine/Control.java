@@ -294,7 +294,7 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     public synchronized void show()
     {
         controlWindow.setVisible(true);
-        viewWindow.setUndecorated(true);
+        //viewWindow.setUndecorated(true);
         viewWindow.setVisible(true);
         
         buttonWindow.setVisible(true);
@@ -389,7 +389,7 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
                 {
                     
                     
-                    gd.setFullScreenWindow(viewWindow);
+                    //gd.setFullScreenWindow(viewWindow);
                     
                 }
             }

@@ -7,113 +7,22 @@ import trypResources.Formula;
  *
  * @author timot_000
  */
-public final class Parameter 
+public final class Parameter<T> 
 {
-    
-    String paramString;
-    int paramInt=0;
-    int[] paramIntArray;
-    Formula paramFormula;
-    boolean paramBoolean;
-    CircleModes paramCircleMode;
-    
-    paramType type = paramType.NULL;
+    private T t;
 
-    
-    
-    public Parameter(String paramString) 
+    public Parameter(T t)
     {
-        setNull();
-        
-        this.paramString = paramString;
-        type=paramType.STRING;
+        this.t = t;
     }
     
-    public Parameter(Formula paramFormula) 
+    public T get()
     {
-        setNull();
-        
-        this.paramFormula = paramFormula;
-        type=paramType.FORMULA;
+        return t;
     }
     
-    public Parameter(boolean paramBoolean) 
+    public Object getType()
     {
-        setNull();
-        
-        this.paramBoolean = paramBoolean;
-        type=paramType.BOOLEAN;
+        return t.getClass();
     }
-    
-    public Parameter(int paramInt) 
-    {
-        setNull();
-        
-        this.paramInt = paramInt;
-        type=paramType.INTEGER;
-    }
-    public Parameter(int[] paramIntArray) 
-    {
-        setNull();
-        
-        this.paramIntArray = paramIntArray;
-        type=paramType.INTARRAY;
-    }
-    
-    public Parameter(CircleModes paramCircleMode) 
-    {
-        setNull();
-        
-        this.paramCircleMode = paramCircleMode;
-        type=paramType.CIRCLEMODE;
-    }
-    
-    public paramType getType()
-    {
-        return type;
-    }
-    
-    public String getString()
-    {
-        return paramString;
-    }
-    
-    public Formula getFormula()
-    {
-        return paramFormula;
-    }
-    
-    public boolean getBoolean()
-    {
-        return paramBoolean;
-    }
-    
-    public int getInt()
-    {
-        return paramInt;
-    }
-    
-    public int[] getIntArray()
-    {
-        return paramIntArray;
-    }
-    
-    public CircleModes getCircleMode()
-    {
-        return paramCircleMode;
-    }
-    
-    protected void setNull()
-    {
-        paramString = null;
-        paramFormula = null;
-        paramBoolean = false;
-        paramInt = 0;
-        paramIntArray = null;
-        paramCircleMode = null;
-        
-        type = paramType.NULL;
-    }
-    
-    
 }

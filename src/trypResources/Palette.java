@@ -167,7 +167,7 @@ public class Palette
     {
         try
         {
-            return colorArray[index];
+            return colorArray[normalize(index)];
         }
         catch(Exception e){return null;}
     }

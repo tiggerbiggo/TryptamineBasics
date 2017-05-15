@@ -7,7 +7,6 @@ package trypGenerators;
 
 import java.util.Random;
 import trypParams.Parameter;
-import trypParams.paramType;
 import trypResources.CircleModes;
 import tryptamine.DynamicCanvas;
 
@@ -75,33 +74,18 @@ public class Gen_Polkadot extends AbstractGenerator
     
     public final boolean parseParams(Parameter[] params)
     {
-        if(params != null && params.length == 6)
+        try
         {
-            if(validateParams(params))
-            {
-                radius=params[0].getInt();
-                offsetX=params[1].getInt();
-                offsetY=params[2].getInt();
-                colorOffset = params[3].getInt();
-                colorSpeed = params[4].getInt();
-                num = params[5].getInt();
-                return true;
-            }
+            radius=(Integer)params[0].get();
+            offsetX=(Integer)params[1].get();
+            offsetY=(Integer)params[2].get();
+            colorOffset = (Integer)params[3].get();
+            colorSpeed = (Integer)params[4].get();
+            num = (Integer)params[5].get();
+            return true;
         }
-        
+        catch(Exception e){}
         return false;
-    }
-
-    public static boolean validateParams(Parameter[] params) 
-    {
-        return params != null &&
-               params.length==6 &&
-               params[0].getType()==paramType.INTEGER &&
-               params[1].getType()==paramType.INTEGER &&
-               params[2].getType()==paramType.INTEGER &&
-               params[3].getType()==paramType.INTEGER &&
-               params[4].getType()==paramType.INTEGER &&
-               params[5].getType()==paramType.INTEGER;
     }
 
     public static Parameter[] getRandomParams(Random rand, int weight1, int weight2, int weight3) 
@@ -110,9 +94,6 @@ public class Gen_Polkadot extends AbstractGenerator
         {
             rand = new Random();
         }
-        
-        
-        
         return constructParams(
                 rand.nextInt(30)*weight1,
                 rand.nextInt(30)*weight2,
