@@ -5,5 +5,6 @@ public enum Function
 	SIN,
 	COS,
 	TAN,
-	LOG
+	LOG,
+        CONSTANT
 }

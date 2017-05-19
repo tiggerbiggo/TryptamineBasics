@@ -11,9 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JPanel;
-import trypGenerators.GenType;
-import trypGenerators.Gen_DualFormula;
-import trypGenerators.Gen_Formula;
+import trypGenerators.*;
 import trypParams.Parameter;
 import trypResources.Layer;
 import trypResources.Palette;
@@ -22,23 +20,19 @@ import trypResources.Palette;
  *
  * @author tiggerbiggo
  */
-public class IconButtonPanel extends JPanel implements Runnable
+public class IconButtonPanel extends JPanel
 {
 
-    protected int x, y;
+    protected final int x, y;
     
     layerButton[][] buttons;
+    
+    Thread[][] buttonThreads;
     
     Palette normal, selected;
     
     Random randType, randParams;
-    int weight1, weight2, weight3;
-    
-    @Override
-    public void run()
-    {
-        updateButtons();
-    }
+    int weight1, weight2, weight3, selectedX, selectedY;
     
     public IconButtonPanel(int x, int y, ActionListener a)
     {
@@ -48,6 +42,7 @@ public class IconButtonPanel extends JPanel implements Runnable
         this.setLayout(new GridLayout(x,y));
         
         buttons = new layerButton[x][y];
+        buttonThreads = new Thread[x][y];
         
         for(int i=0; i<x; i++)
         {
@@ -56,6 +51,7 @@ public class IconButtonPanel extends JPanel implements Runnable
                 buttons[i][j] = new layerButton();
                 buttons[i][j].addActionListener(a);
                 this.add(buttons[i][j]);
+                
             }
         }
         
@@ -83,7 +79,6 @@ public class IconButtonPanel extends JPanel implements Runnable
     
     public void updateButtons()
     {
-        
         for(int i=0; i<buttons.length; i++)
         {
             for(int j=0; j<buttons[i].length; j++)
@@ -96,7 +91,7 @@ public class IconButtonPanel extends JPanel implements Runnable
                 
                 /*switch(type)
                 {
-                    case CIRCULAR:
+                    /*case CIRCULAR:
                         params = Gen_Circular.getRandomParams(randType, 
                             weight1, 
                             weight2, 
@@ -114,39 +109,49 @@ public class IconButtonPanel extends JPanel implements Runnable
                             weight2, 
                             weight3);
                         break;
-                    default:
-                        type = GenType.FORMULA;
-                        params = Gen_Formula.getRandomParams(randType, 
+                    case DUALFORMULA:
+                        params = Gen_DualFormula.getRandomParams(randType, 
                             weight1, 
                             weight2, 
                             weight3);
                         break;
                 }*/
                 
-                params = Gen_DualFormula.getRandomParams(randType, 
+                if(false)//randParams.nextBoolean()
+                {
+                    type = GenType.FORMULA;
+                    params = Gen_Formula.getRandomParams(randType, 
                             weight1, 
                             weight2, 
                             weight3);
+                }
+                else
+                {
+                    type = GenType.DUALFORMULA;
+                    params = Gen_DualFormula.getRandomParams(randType, 
+                            weight1, 
+                            weight2, 
+                            weight3);
+                }
                 
                 
                 
                 //Layer l = new Layer("doot", GenType.FORMULA, params);
-                Layer l = new Layer("doot", GenType.DUALFORMULA, params);
-                buttons[i][j].setLayer(l);
-                buttons[i][j].updateIcon(normal);
-                
-                buttons[i][j].repaint();
-                
-                if(Thread.interrupted())
+                Layer l = new Layer("doot", type, params);
+                buttons[i][j].l = l;
+                buttons[i][j].P = normal;
+                if(buttonThreads[i][j] == null || !buttonThreads[i][j].isAlive())//if thread is null or dead
                 {
-                    //oh dear
-                    return;
+                    buttons[i][j].needsUpdate = false;
+                    buttonThreads[i][j] = new Thread(buttons[i][j]);
+                    buttonThreads[i][j].start();
+                }
+                else
+                {
+                    buttons[i][j].needsUpdate=true;
                 }
             }
         }
-        
-        //buttonPanel.revalidate();
-        //buttonPanel.repaint();
     }
 
     
@@ -159,10 +164,27 @@ public class IconButtonPanel extends JPanel implements Runnable
             {
                 if(e.getSource() == buttons[i][j])
                 {
-                    return buttons[i][j].getLayer();
+                    selectedX=i;
+                    selectedY=j;
+                    return buttons[i][j].l;
                 }
             }
         }
         return null;
+    }
+    
+    public String getSelected()
+    {
+        return selectedX+","+selectedY;
+    }
+    
+    public void randomClick(Random rand)
+    {
+        if(rand == null) rand = new Random();
+        
+        int xClick = rand.nextInt(x-1);
+        int yClick = rand.nextInt(y-1);
+        
+        buttons[xClick][yClick].doClick();
     }
 }

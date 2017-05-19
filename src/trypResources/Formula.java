@@ -1,145 +1,134 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package trypResources;
 
-public class Formula
+import java.util.ArrayList;
+
+/**
+ *
+ * @author lea14141039
+ */
+public class Formula 
 {
+    private ArrayList<Formula> formulaList;
+    private Operation thisOp;
+    private Function thisFunc;
+    private double thisNum;
 
-    Function func;
-    boolean fin;
-    Formula next;
-    Operation op;
-    double coeff, freq, freqEff, coCoeff;
-    int selected;
-
-    public Formula(Function func)
-    {
-        this.func = func;
-        fin = true;
-        
-        coeff=1;
-        coCoeff=1;
-        freq=1;
-        freqEff=1;
-        selected=-1;
-    }
-
-    public Formula(Function func, Formula next, Operation op)
-    {
-        this.func = func;
-        this.next = next;
-        this.op = op;
-        fin = false;
-        
-        coeff=1;
-        freq=1;
-        freqEff=1;
-        coCoeff=1;
-        selected=-1;
-    }
-
-    public Formula getNext()
-    {
-        return next;
-    }
-
-    public void setCoeff(double coeff)
-    {
-        this.coeff = coeff;
-    }
-
-    public void setFreqEff(double freqEff)
-    {
-        this.freqEff = freqEff;
-    }
-
-    public void setFreq(double freq)
-    {
-        this.freq = freq;
+    public Formula(Function thisFunc, double thisNum) {
+        thisOp = null;
+        this.thisFunc = thisFunc;
+        this.thisNum = thisNum;
+        formulaList = new ArrayList();
     }
     
-    public void setCoCoeff(double coCoeff)
-    {
-        this.coCoeff = coCoeff;
+    public Formula(Function thisFunc, double thisNum, Operation thisOp) {
+        this.thisOp = thisOp;
+        this.thisFunc = thisFunc;
+        this.thisNum = thisNum;
+        formulaList = new ArrayList();
     }
     
-    public void setSelected(int selected)
-    {
-        this.selected=selected;
-    }
-
-    public double getCoeff()
-    {
-        return coeff;
-    }
-
-    public double getFreqEff()
-    {
-        return freqEff;
+    public Formula(Function thisFunc, double thisNum, Operation thisOp, Formula single) {
+        this.thisOp = thisOp;
+        this.thisFunc = thisFunc;
+        this.thisNum = thisNum;
+        formulaList = new ArrayList();
+        formulaList.add(single);
     }
     
-    public double getCoCoeff(double coCoeff)
-    {
-        return coCoeff;
-    }
-
-    public double getFreq()
-    {
-        return freq;
-    }
-    
-    
-    public int getSelected()
-    {
-        return selected;
-    }
-
-    public double recursiveCalc(double val)
-    {
-        if (fin)
+    public Formula(Function thisFunc, double thisNum, Operation thisOp, ArrayList<Formula> list) {
+        this.thisOp = thisOp;
+        this.thisFunc = thisFunc;
+        this.thisNum = thisNum;
+        if(list != null)
         {
-            return basicCalc(val);
-        } else
+            formulaList = list;
+        }
+        else
         {
-            switch (op)
+            formulaList = new ArrayList();
+        }
+    }
+    
+    public double Calculate(double x)
+    {
+        if(formulaList.isEmpty())
+        {
+            return getSelf(x);
+        }
+        
+        double tmp1, tmp2;
+        
+        tmp2=0;
+        for(int i=0; i<formulaList.size(); i++)
+        {
+            tmp1 = formulaList.get(i).Calculate(x);
+            if(i!=0)
             {
-                case ADD:
-                    //System.out.println("ADD");
-                    return basicCalc(val) + next.recursiveCalc(val);
-                case SUBTRACT:
-                    //System.out.println("SUBTRACT");
-                    return basicCalc(val) - next.recursiveCalc(val);
-                case MULTIPLY:
-                    //System.out.println("MULTIPLY");
-                    return basicCalc(val) * next.recursiveCalc(val);
-                case DIVIDE:
-                    //System.out.println("DIVIDE");
-                    return basicCalc(val) / next.recursiveCalc(val);
-                case ENCLOSE:
-                    //System.out.println("ENCLOSE");
-                    return basicCalc(next.recursiveCalc(val));
-                case POWER:
-                    //System.out.println("EXPONENT");
-                    return Math.pow(basicCalc(val), next.recursiveCalc(val));
-                default:
-                    //System.out.println("DEFAULT");
-                    return basicCalc(val);
+                tmp2=doOperation(tmp1, tmp2, formulaList.get(i-1).thisOp);
+            }
+            else
+            {
+                tmp2 = tmp1;
             }
         }
+        
+        if(thisOp == Operation.ENCLOSE)
+        {
+            return getSelf(tmp2);
+        }
+        return doOperation(thisNum, tmp2, thisOp);
     }
-
-    public double basicCalc(double val)
+    
+    
+    public double doOperation(double a, double b, Operation op)
     {
-        switch (func)
+        if(op ==null)
+        {
+            return b+a;
+        }
+        switch(op)
+        {
+            case ADD:
+                return b+a;
+            case SUBTRACT:
+                return b-a;
+            case MULTIPLY:
+                return b*a;
+            case DIVIDE:
+                if(a==0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return b/a;
+                }
+            case POWER:
+                return b*a*a;//Real powers are really slow, so I'm replacing them with this until I get something better and faster
+        }
+        return 0;
+    }
+    private double getSelf(double x)
+    {
+        switch(thisFunc)
         {
             case SIN:
-                return coeff * coCoeff * Math.sin(val * freq * freqEff);
+                return thisNum*Math.sin(x);
             case COS:
-                return coeff * coCoeff * Math.cos(val * freq * freqEff);
+                return thisNum*Math.cos(x);
             case TAN:
-                return coeff * coCoeff * Math.tan(val * freq * freqEff);
+                return thisNum*Math.tan(x);
             case LOG:
-                return coeff * coCoeff * Math.log(val * freq * freqEff);
-            default:
-                return 0;
+                return thisNum*Math.log(x);
+            case CONSTANT:
+                return thisNum;
         }
+        
+        return thisNum;
     }
 }

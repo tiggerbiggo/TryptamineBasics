@@ -18,78 +18,41 @@ public class FormulaPresets
 {
     
     
-    public static ArrayList<Formula> setupFormulas(double coeff, double freq)
+    public static ArrayList<Formula> setupFormulas(double coeff)
     {
         ArrayList<Formula> formulas = new ArrayList();
+        ArrayList<Formula> tmpList = new ArrayList();
         
         Formula F;
-        int i=0;
         
-        F = new Formula(Function.SIN);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.TAN, coeff, Operation.ADD); //y=sin(coeff*x)
+        tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.COS, F, Operation.ADD);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.SIN, coeff*1.25, Operation.ADD, F);//y=cos(coeff*1.25*x)
+        tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.SIN, F, Operation.MULTIPLY);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.LOG, coeff, Operation.POWER, new ArrayList(tmpList));//y=1*(sin(coeff*x)+cos(coeff*1.25*x))
+        tmpList = new ArrayList();
+        //tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.TAN);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.SIN, coeff, Operation.DIVIDE);
+        tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.SIN, F, Operation.ENCLOSE);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.TAN, coeff/10, Operation.SUBTRACT);
+        tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.LOG);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.LOG, coeff*3, Operation.DIVIDE);
+        tmpList.add(F);
         formulas.add(F);
         
-        F = new Formula(Function.SIN, F, Operation.DIVIDE);
-        F = setFValues(F, coeff, freq);
-        i++;
-        formulas.add(F);
-        
-        F = new Formula(Function.TAN, F, Operation.POWER);
-        F = setFValues(F, coeff, freq);
-        i++;
-        formulas.add(F);
-        
-        F = new Formula(Function.LOG, new Formula(Function.SIN), Operation.ENCLOSE);
-        F = setFValues(F, coeff, freq);
-        i++;
-        formulas.add(F);
-        
-        F=new Formula(Function.COS, F, Operation.MULTIPLY);
-        F = setFValues(F, coeff, freq);
-        i++;
+        F = new Formula(Function.CONSTANT, 1, Operation.ENCLOSE, new ArrayList(tmpList));
         formulas.add(F);
         
         return formulas;
-    }
-    
-    private static Formula setFValues(Formula F, double coeff, double freq)
-    {
-        try
-        {
-            F.setCoeff(coeff);
-            F.setFreq(freq);
-            return F;
-        }
-        catch(Exception e)
-        {
-            
-            return null;
-        }
     }
 }

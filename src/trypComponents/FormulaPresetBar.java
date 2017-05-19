@@ -172,11 +172,11 @@ public class FormulaPresetBar extends JPanel implements ActionListener, ChangeLi
     {
         try
         {
-            F.setCoeff(coeff);
-            F.setFreq(freq);
-            F.setCoCoeff(coCoeff);
-            F.setFreqEff(freqEff);
-            F.setSelected(i);
+            //F.setCoeff(coeff);
+            //F.setFreq(freq);
+            //F.setCoCoeff(coCoeff);
+            //F.setFreqEff(freqEff);
+            //F.setSelected(i);
             return F;
         }
         catch(Exception e)
@@ -188,7 +188,7 @@ public class FormulaPresetBar extends JPanel implements ActionListener, ChangeLi
     
     private void setupFormulas()
     {
-        formulas = new ArrayList();
+        /*formulas = new ArrayList();
         
         Formula F;
         int i=0;
@@ -211,7 +211,7 @@ public class FormulaPresetBar extends JPanel implements ActionListener, ChangeLi
         F = new Formula(Function.TAN);
         F = setFValues(F, i);
         i++;
-        formulas.add(F);
+        formulas.add(F);*/
     }
     
     

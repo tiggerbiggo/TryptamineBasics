@@ -7,6 +7,7 @@ package trypLayerPanels;
 
 import java.awt.GridLayout;
 import trypComponents.*;
+import trypGenerators.FormulaPresets;
 import trypGenerators.Gen_DistortFormula;
 import trypParams.Parameter;
 import trypResources.Formula;
@@ -32,8 +33,7 @@ public class DistortFormulaLayerPanel extends AbstractLayerPanel
         //hv, dir, gaps, formula
         try
         {
-            Formula F = new Formula(Function.SIN);
-            F.setCoeff(20);
+            Formula F = FormulaPresets.setupFormulas(0.5).get(0);
             return Gen_DistortFormula.constructParams(
                     boolHVPanel.getBoolean(), 
                     boolDirPanel.getBoolean(), 
@@ -79,10 +79,10 @@ public class DistortFormulaLayerPanel extends AbstractLayerPanel
             boolHVPanel.setBoolean((Boolean)params[0].get());
             boolDirPanel.setBoolean((Boolean)params[1].get());
             gapPanel.setSelected(GapPresets.parseArray((int[])params[2].get()));
-            double coeff = f.getCoeff();
-            double freq = f.getFreq();
-            int selected = f.getSelected();
-            presets.setAll(coeff, freq, selected);
+            //double coeff = f.getCoeff();
+            //double freq = f.getFreq();
+            //int selected = f.getSelected();
+            //presets.setAll(coeff, freq, selected);
         }
         catch(Exception e){}
     }

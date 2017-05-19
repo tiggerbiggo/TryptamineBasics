@@ -149,4 +149,12 @@ public class Viewport extends JPanel implements ActionListener
         }
     }
     
+    public void saveImage(String filename)
+    {
+        if(images != null)
+        {
+            fileManager.writeGif(images, filename);
+        }
+    }
+    
 }

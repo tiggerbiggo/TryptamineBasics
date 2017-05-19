@@ -38,7 +38,7 @@ public class Gen_DualFormula extends AbstractGenerator
         {
             for(int j=0; j<DC.getY(); j++)
             {
-                double numToDraw = Math.abs(xFormula.recursiveCalc((i/zoomx)+yFormula.recursiveCalc(j/zoomy)));
+                double numToDraw = Math.abs(xFormula.Calculate((i/zoomx))+yFormula.Calculate(j/zoomy));
                 DC.draw(i, j, PaletteNum, (int)Math.round(numToDraw));
             }
         }
@@ -77,16 +77,16 @@ public class Gen_DualFormula extends AbstractGenerator
             rand = new Random();
         }
         
-        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*weight2*2, rand.nextDouble()*(weight3/40.0));
+        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*10);
         
         //GapPresets.gaps[rand.nextInt(GapPresets.gaps.length-1)]
         
         
         return constructParams(
-                f.get(Math.min(rand.nextInt(weight1), f.size()-1)), 
-                f.get(Math.min(rand.nextInt(weight1), f.size()-1)), 
-                (double)weight2/100,
-                (double)weight3/100);
+                f.get(rand.nextInt(f.size())), 
+                f.get(rand.nextInt(f.size())), 
+                (double)weight2/(double)weight1,
+                (double)weight3/(double)weight1);
         
         /*return constructParams(
                 rand.nextBoolean(), 

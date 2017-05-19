@@ -16,24 +16,13 @@ import tryptamine.ImageManager;
  *
  * @author amnesia
  */
-public class layerButton extends JButton
+public class layerButton extends JButton implements Runnable
 {
-    Layer l;
-    DynamicCanvas DC;
+    public Layer l;
+    public Palette P;
+    public boolean needsUpdate;
     
-    
-    
-    public void setLayer(Layer l)
-    {
-        this.l = l;
-    }
-    
-    public Layer getLayer()
-    {
-        return l;
-    }
-    
-    public void updateIcon(Palette P)
+    public void updateIcon()
     {
         if(l != null && l.getGenerator() != null)
         {
@@ -41,5 +30,17 @@ public class layerButton extends JButton
             DC = l.getGenerator().draw(DC, 0);
             this.setIcon(new ImageIcon(ImageManager.constructImage(DC)));
         }
+    }
+
+    @Override
+    public void run()
+    {
+        do
+        {
+            needsUpdate = false;
+            updateIcon();
+        }
+        while(needsUpdate);
+        repaint();
     }
 }

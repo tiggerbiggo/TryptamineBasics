@@ -43,7 +43,7 @@ public class Gen_Formula extends AbstractGenerator
         int c=0;
         for(int i=0; i<maxPos; i++)
         {
-            startPos=(int)Math.round(F.recursiveCalc(i));
+            startPos=(int)Math.round(F.Calculate(i));
             
             
             
@@ -99,7 +99,7 @@ public class Gen_Formula extends AbstractGenerator
             rand = new Random();
         }
         
-        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*weight2*2, rand.nextDouble()*(weight3/40.0));
+        ArrayList<Formula> f = FormulaPresets.setupFormulas(rand.nextDouble()*weight2*2);
         
         //GapPresets.gaps[rand.nextInt(GapPresets.gaps.length-1)]
         

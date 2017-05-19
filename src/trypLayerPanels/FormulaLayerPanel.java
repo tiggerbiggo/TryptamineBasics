@@ -32,8 +32,8 @@ public class FormulaLayerPanel extends AbstractLayerPanel
         //hv, dir, colorspeed, gaps, formula
         try
         {
-            Formula F = new Formula(Function.SIN);
-            F.setCoeff(20);
+            //Formula F = new Formula(Function.SIN);
+            //F.setCoeff(20);
             return Gen_Formula.constructParams(
                     boolHVPanel.getBoolean(), 
                     colorSpeed.getInt(), 
@@ -76,10 +76,10 @@ public class FormulaLayerPanel extends AbstractLayerPanel
             boolHVPanel.setBoolean((Boolean)params[0].get());
             colorSpeed.setInt((Integer)params[1].get());
             gapPanel.setSelected(GapPresets.parseArray((int[])params[2].get()));
-            double coeff = f.getCoeff();
-            double freq = f.getFreq();
-            int selected = f.getSelected();
-            presets.setAll(coeff, freq, selected);
+            //double coeff = f.getCoeff();
+            //double freq = f.getFreq();
+            //int selected = f.getSelected();
+            //presets.setAll(coeff, freq, selected);
         }
         catch(Exception e){}
     }

@@ -41,7 +41,7 @@ public class Gen_FormulaSplit extends AbstractGenerator
         int c=0;
         for(int i=0; i<maxPos; i++)
         {
-            startPos=(int)Math.round(F.recursiveCalc(i));
+            startPos=(int)Math.round(F.Calculate(i));
             //if(!dir)startPos*=-1;
             if(n>=gaps.length)
             {

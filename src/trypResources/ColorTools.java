@@ -6,6 +6,7 @@
 package trypResources;
 
 import java.awt.Color;
+import java.util.Random;
 
 /**
  *
@@ -16,5 +17,15 @@ public class ColorTools
     public static Color invert(Color C)
     {
         return new Color(255-C.getRed(), 255-C.getGreen(), 255-C.getBlue());
+    }
+    
+    public static Color randomColor(Random rand)
+    {
+        if(rand == null) rand = new Random();
+        
+        return new Color(
+                rand.nextInt(255), 
+                rand.nextInt(255), 
+                rand.nextInt(255));
     }
 }

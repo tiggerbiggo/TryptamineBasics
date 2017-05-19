@@ -22,6 +22,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import trypComponents.ColorPicker;
 import trypComponents.IconButtonPanel;
+import trypResources.ColorTools;
 import trypResources.Layer;
 import trypResources.Palette;
 
@@ -35,6 +36,8 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     final int buttonX = 5;
     final int buttonY = 5;
     
+    private boolean fullScreenEnabled;
+    
     JFrame controlWindow, viewWindow, buttonWindow;
     
     Viewport viewport;
@@ -43,26 +46,35 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     
     IconButtonPanel buttonPanel;
     
-    Thread buttonPanelThread;
-    
     ArrayList<BufferedImage> images;
     int currentImage = 0;
-    int seed;
+    int seed, randomTime, fullScreenDisplay;
     final int pNum = 50;
     
     JSlider[] sliders;
     
     ColorPicker cPicker1, cPicker2;
-    JButton newSeedButton;
+    JButton newSeedButton, saveButton;
     
     Palette P;
     
     Layer currentLayer;
     
-    Timer refreshTimer;
+    Timer randomiseTimer;
+    
+    int[] sliderMaxValues;
+    
+    public Control(boolean saveButtonEnabled, int randomTime, int[] sliderMaxValues, boolean fullScreenEnabled, int fullScreenDisplay)
+    {
+        this.fullScreenEnabled = fullScreenEnabled;
+        this.randomTime = randomTime;
+        this.fullScreenDisplay = fullScreenDisplay;
+        this.sliderMaxValues = sliderMaxValues;
+    }
     
     public void initGUI() 
     {
+        
         //Begin object definitions
         
         buttonWindow = new JFrame("Click the patterns");
@@ -76,9 +88,9 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         cPicker1 = new ColorPicker(true, null, this);
         cPicker2 = new ColorPicker(false, null, this);
         
-        newSeedButton = new JButton("Current Seed:" + seed);
+        newSeedButton = new JButton();
         setSeed(-1);
-        
+        saveButton = new JButton("Save Current Animation");
         
         //Begin setup
         
@@ -113,6 +125,7 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         colorPanel.setLayout(new GridLayout(1,3));
         
         newSeedButton.addActionListener(this);
+        saveButton.addActionListener(this);
         
         colorPanel.add(cPicker1);
         colorPanel.add(cPicker2);
@@ -124,15 +137,18 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         //begin slider definitions
         
         sliders = new JSlider[3];
-        int[] nums = {
-            10, 50, 50
-        };
+        if(sliderMaxValues == null || sliderMaxValues.length<=0)
+        {
+            sliderMaxValues = new int[]{100, 50, 50};
+        }
         
         for(int i=0; i<3; i++)
         {
             sliders[i] = new JSlider();
-            sliders[i].setMaximum(nums[i]);
-            sliders[i].setValue(0);
+            if(sliderMaxValues[i] <=0) sliders[i].setMaximum(50);
+            else sliders[i].setMaximum(sliderMaxValues[i]);
+            sliders[i].setMinimum(1);
+            sliders[i].setValue(1);
             sliders[i].addChangeListener(this);
             sliderPanel.add(sliders[i]);
         }
@@ -159,13 +175,18 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         
         controlWindow.add(newSeedButton, c);
         
+        c.gridy=3;
+        
+        controlWindow.add(saveButton, c);
         
         P = new Palette(pNum,0);
         
         updatePalette();
         
-        
-        refreshTimer = new Timer(50, this);
+        if(randomTime >=1)
+        {
+            randomiseTimer = new Timer(randomTime, this);
+        }
     }
     
     public void updatePalette()
@@ -254,41 +275,14 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     
     public void updateButtonPanel()
     {
-        if(buttonPanelThread == null)
-        {
-            buttonPanelThread = new Thread(buttonPanel);
-        }
-        
-        
-        
-        if(buttonPanelThread.isAlive())
-        {
-            //buttonPanelThread.interrupt();
-        }
-        else
-        {
-            
-            buttonPanel.setWeights(
-                new Random(seed), 
-                new Random(seed), 
-                sliders[0].getValue(), 
-                sliders[1].getValue(), 
-                sliders[2].getValue());
-            buttonPanel.setPalette(P);
-            try
-            {
-                buttonPanelThread = new Thread(buttonPanel);
-                buttonPanelThread.start();
-            }
-            catch(Exception e)
-            {
-                
-            }
-        }
-        
-        
-        
-        
+        buttonPanel.setWeights(
+            new Random(seed), 
+            new Random(seed), 
+            sliders[0].getValue(), 
+            sliders[1].getValue(), 
+            sliders[2].getValue());
+        buttonPanel.setPalette(P);
+        buttonPanel.updateButtons();
     }
     
     public synchronized void show()
@@ -299,13 +293,12 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         
         buttonWindow.setVisible(true);
         
-        buttonWindow.revalidate();
-        
+        updateButtonPanel();
         
         cPicker1.setColor(Color.red);
         cPicker2.setColor(Color.black);
         
-        refreshTimer.start();
+        if(randomiseTimer != null) randomiseTimer.start();
         
         try
         {
@@ -342,9 +335,18 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
         updatePalette();
         updateButtonPanel();
         //updateViewport(null);
-        
+        resetTimer();
     }
-
+    
+    public void resetTimer()//sets interacting vs idle
+    {
+        if(randomiseTimer != null)
+        {
+            randomiseTimer.setDelay(randomTime);
+            randomiseTimer.restart();
+        }
+    }
+    
     public void setSeed(int seed)
     {
         if(seed <=-1)
@@ -365,37 +367,75 @@ public class Control implements ComponentListener, ChangeListener, ActionListene
     {
         //get layer from button panel
         
-        if(e.getSource() == newSeedButton)
+        Object toCheck = e.getSource();
+        
+        resetTimer();
+        
+        if(toCheck == newSeedButton)
         {
             setSeed(-1);
             updateButtonPanel();
         }
-        else updateViewport(e);
+        else if(toCheck == saveButton)
+        {
+            viewport.saveImage(
+                            "S"+
+                            seed+
+                            "V0_"+
+                            sliders[0].getValue()+
+                            "V1_"+
+                            sliders[1].getValue()+
+                            "V2_"+
+                            sliders[2].getValue()+
+                            "B"+buttonPanel.getSelected());
+        }
+        else if(toCheck == randomiseTimer)
+        {
+            //randomise all
+            Random rand = new Random();
+            
+            newSeedButton.doClick();
+            cPicker1.setColor(ColorTools.randomColor(null));
+            cPicker2.setColor(ColorTools.randomColor(null));
+            
+            for(JSlider s : sliders)
+            {
+                s.setValue(rand.nextInt(s.getMaximum()-1)+1);
+            }
+            
+            buttonPanel.randomClick(null);
+        }
+        else 
+        {
+            updateViewport(buttonPanel.getLayerFromButton(e));
+        }
     }
     
-    public void updateViewport(ActionEvent e)
+    public void updateViewport(Layer l)
     {
-        if(e != null)
-            currentLayer = buttonPanel.getLayerFromButton(e);
+        if(l != null)
+            currentLayer = l;
         
         if(currentLayer != null)
         {
-            
-            try
+            if(fullScreenEnabled && fullScreenDisplay >= 0)
             {
-                GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[1];
-
-                if(gd.isFullScreenSupported())
+                try
                 {
-                    
-                    
-                    //gd.setFullScreenWindow(viewWindow);
-                    
+                    GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[fullScreenDisplay];
+
+                    if(gd.isFullScreenSupported())
+                    {
+
+
+                        gd.setFullScreenWindow(viewWindow);
+
+                    }
                 }
-            }
-            catch(Exception ex)
-            {
-                ex.printStackTrace();
+                catch(Exception ex)
+                {
+                    ex.printStackTrace();
+                }
             }
             viewport.setPalette(P);
             viewport.setLayer(currentLayer);
